@@ -1,6 +1,5 @@
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -24,12 +23,12 @@ public class MessageFrame extends JFrame implements ActionListener {
         setLayout(new BorderLayout());
         setSize(300, 300);
 
-        messageBox = new JPanel(new GridLayout(20, 1));
-        messageBox.add(new JLabel("ここに"));
-        messageBox.add(new JLabel("交換し合った"));
-        messageBox.add(new JLabel("メッセージを"));
-        messageBox.add(new JLabel("表示する"));
-        messageBox.add(new JLabel("予定"));
+        messageBox = new JPanel(new GridLayout(10, 1));
+        messageBox.add(new MessagePanel("ここに"));
+        messageBox.add(new MessagePanel("交換し合った"));
+        messageBox.add(new MessagePanel("メッセージを"));
+        messageBox.add(new MessagePanel("表示する"));
+        messageBox.add(new MessagePanel("予定"));
         add(messageBox, BorderLayout.CENTER);
 
         messageInputPanel = new JPanel(new BorderLayout());
@@ -40,6 +39,7 @@ public class MessageFrame extends JFrame implements ActionListener {
         messageInputPanel.add(messageSendButton, BorderLayout.EAST);
         add(messageInputPanel, BorderLayout.SOUTH);
 
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setVisible(true);
     }
@@ -49,7 +49,7 @@ public class MessageFrame extends JFrame implements ActionListener {
         if (e.getSource() == messageSendButton) {
             String text = messageInput.getText();
             if (text.equals("")) return;
-            messageBox.add(new JLabel(text));
+            messageBox.add(new MessagePanel(text));
             messageInput.setText("");
         }
         messageBox.revalidate();
