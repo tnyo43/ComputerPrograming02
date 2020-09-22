@@ -31,7 +31,7 @@ public class MessageFrame extends JFrame implements ActionListener {
         super("メッセージフレーム");
 
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(200,560));
+        setPreferredSize(new Dimension(250,560));
         gridLayout = new GridLayout(MINIMAM_MESSAGE_NUMBER, 1);
         messageBox = new JPanel(gridLayout);
         scroll = new JScrollPane(
@@ -60,7 +60,7 @@ public class MessageFrame extends JFrame implements ActionListener {
         if (messageCount > MINIMAM_MESSAGE_NUMBER) {
             gridLayout.setRows(messageCount);
         }
-        messageBox.add(new MessagePanel(text));
+        messageBox.add(new MessagePanel(text, "user1"));
     }
 
     @Override
