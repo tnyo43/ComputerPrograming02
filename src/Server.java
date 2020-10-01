@@ -32,8 +32,7 @@ class Server {
             try {
                 String text = null;
                 while((text = this.in.readLine()) != null) {
-                    String sendingText = "[" + this.id + "]" + text;
-                    this.server.send(this.id, sendingText);
+                    this.server.send(this.id, text);
                 }
                 this.server.remove(this.id);
                 this.socket.close();

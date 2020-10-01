@@ -44,7 +44,7 @@ class Client {
         while (true);
     }
 
-    public void send(String text) {
-        this.pwToServer.println(text);
+    public void send(String text, String username) {
+        this.pwToServer.println(String.format("%s;%s", username, text));
     }
 }

@@ -16,7 +16,7 @@ public class MessageFrame extends JFrame implements ActionListener, MessageRecei
     private static final long serialVersionUID = -3594659038545207881L;
 
     private JPanel messageBox;
-    GridLayout gridLayout;
+    private GridLayout gridLayout;
 
     private JPanel messageInputPanel;
     private JTextField messageInput;
@@ -26,14 +26,15 @@ public class MessageFrame extends JFrame implements ActionListener, MessageRecei
 
     private static final int MINIMAM_MESSAGE_NUMBER = 7;
     private int messageCount = 0;
+    private String username;
 
     private Client client;
 
-    public MessageFrame() {
+    public MessageFrame(String username) {
         super("メッセージフレーム");
 
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(250,560));
+        setPreferredSize(new Dimension(250, 560));
         gridLayout = new GridLayout(MINIMAM_MESSAGE_NUMBER, 1);
         messageBox = new JPanel(gridLayout);
         scroll = new JScrollPane(
@@ -56,18 +57,19 @@ public class MessageFrame extends JFrame implements ActionListener, MessageRecei
         pack();
         setVisible(true);
         
+        this.username = username;
 
         // チャットクライアントとしての機能
         this.client = new Client(this);
         this.client.start();
     }
 
-    private void addMessage(String text) {
+    private void addMessage(String text, String username) {
         messageCount++;
         if (messageCount > MINIMAM_MESSAGE_NUMBER) {
             gridLayout.setRows(messageCount);
         }
-        messageBox.add(new MessagePanel(text, "user1"));
+        messageBox.add(new MessagePanel(text, username));
 
         // スクロールの調整
         SwingUtilities.invokeLater(new Runnable() {
@@ -88,14 +90,22 @@ public class MessageFrame extends JFrame implements ActionListener, MessageRecei
         if (e.getSource() == messageSendButton) {
             String text = messageInput.getText();
             if (text.equals("")) return;
-            addMessage(text);
-            this.client.send(text);
+            addMessage(text, this.username);
+            this.client.send(text, this.username);
             messageInput.setText("");
         }
     }
 
     @Override
-    public void received(String text) {
-        addMessage(text);
+    public void received(String original) {
+        String strs[] = original.split(";", 2);
+        for (String s : strs) {
+            System.out.println(s);
+        }
+        if (strs.length != 2) {
+            System.out.println("invalid message: cannot find username");
+            return;
+        }
+        addMessage(strs[1], strs[0]);
     }
 }
