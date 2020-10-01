@@ -38,7 +38,7 @@ class Server {
                 this.server.remove(this.id);
                 this.socket.close();
             } catch (IOException e) {
-                System.out.println(e);
+                System.err.println(e);
                 this.server.remove(this.id);
             }
         }
@@ -63,7 +63,7 @@ class Server {
                 new Thread(c).start();
             }
         } catch (IOException e) {
-            System.out.println(e);
+            System.err.println(e);
         }
     }
 

@@ -12,7 +12,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MessageFrame extends JFrame implements ActionListener {
+public class MessageFrame extends JFrame implements ActionListener, MessageReceiver {
     private static final long serialVersionUID = -3594659038545207881L;
 
     private JPanel messageBox;
@@ -26,6 +26,8 @@ public class MessageFrame extends JFrame implements ActionListener {
 
     private static final int MINIMAM_MESSAGE_NUMBER = 7;
     private int messageCount = 0;
+
+    private Client client;
 
     public MessageFrame() {
         super("メッセージフレーム");
@@ -53,6 +55,11 @@ public class MessageFrame extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setVisible(true);
+        
+
+        // チャットクライアントとしての機能
+        this.client = new Client(this);
+        this.client.start();
     }
 
     private void addMessage(String text) {
@@ -61,6 +68,19 @@ public class MessageFrame extends JFrame implements ActionListener {
             gridLayout.setRows(messageCount);
         }
         messageBox.add(new MessagePanel(text, "user1"));
+
+        // スクロールの調整
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JScrollBar scrollBar = scroll.getVerticalScrollBar();
+                scrollBar.setValue(scrollBar.getMaximum());
+            }
+        });
+
+        // 新しいメッセージの再表示
+        messageBox.revalidate();
+        messageBox.repaint();
     }
 
     @Override
@@ -69,18 +89,13 @@ public class MessageFrame extends JFrame implements ActionListener {
             String text = messageInput.getText();
             if (text.equals("")) return;
             addMessage(text);
+            this.client.send(text);
             messageInput.setText("");
-
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    JScrollBar scrollBar = scroll.getVerticalScrollBar();
-                    scrollBar.setValue(scrollBar.getMaximum());
-                }
-            });
         }
+    }
 
-        messageBox.revalidate();
-        messageBox.repaint();
+    @Override
+    public void received(String text) {
+        addMessage(text);
     }
 }
