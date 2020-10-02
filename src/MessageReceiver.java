@@ -1,3 +1,3 @@
 public interface MessageReceiver {
-    public void received(String text);
+    public void received(String name, String text);
 }

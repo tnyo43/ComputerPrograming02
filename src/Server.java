@@ -50,7 +50,7 @@ class Server {
     private List<Connection> connections;
 
     public Server() {
-        this.connections = new LinkedList<Connection>();
+        this.connections = new LinkedList<>();
         Socket socket;
         int count = 0;
 

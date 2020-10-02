@@ -18,7 +18,6 @@ public class MessageFrame extends JFrame implements ActionListener, MessageRecei
     private JPanel messageBox;
     private GridLayout gridLayout;
 
-    private JPanel messageInputPanel;
     private JTextField messageInput;
     private JButton messageSendButton;
 
@@ -44,7 +43,7 @@ public class MessageFrame extends JFrame implements ActionListener, MessageRecei
                 );
         add(scroll, BorderLayout.CENTER);
 
-        messageInputPanel = new JPanel(new BorderLayout());
+        JPanel messageInputPanel = new JPanel(new BorderLayout());
         messageInput = new JTextField();
         messageSendButton = new JButton("送信");
         messageSendButton.addActionListener(this);
@@ -71,6 +70,10 @@ public class MessageFrame extends JFrame implements ActionListener, MessageRecei
         }
         messageBox.add(new MessagePanel(text, username));
 
+        // 新しいメッセージの再表示
+        messageBox.revalidate();
+        messageBox.repaint();
+
         // スクロールの調整
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -79,10 +82,6 @@ public class MessageFrame extends JFrame implements ActionListener, MessageRecei
                 scrollBar.setValue(scrollBar.getMaximum());
             }
         });
-
-        // 新しいメッセージの再表示
-        messageBox.revalidate();
-        messageBox.repaint();
     }
 
     @Override
@@ -97,15 +96,7 @@ public class MessageFrame extends JFrame implements ActionListener, MessageRecei
     }
 
     @Override
-    public void received(String original) {
-        String strs[] = original.split(";", 2);
-        for (String s : strs) {
-            System.out.println(s);
-        }
-        if (strs.length != 2) {
-            System.out.println("invalid message: cannot find username");
-            return;
-        }
-        addMessage(strs[1], strs[0]);
+    public void received(String name, String text) {
+        addMessage(text, name);
     }
 }

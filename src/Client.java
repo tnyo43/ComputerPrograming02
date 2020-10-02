@@ -13,7 +13,7 @@ class Client {
         try {
             this.socket = new Socket(HOST,PORT);
 
-            // 自分が書いたテキストをサーバに送る
+            // 自分が書いたテキストをサーバに送るためのPrintWriter
             this.pwToServer = new PrintWriter(this.socket.getOutputStream(), true);
 
             // サーバから送られたテキストを扱うスレッド
@@ -24,7 +24,15 @@ class Client {
                     try {
                         String s;
                         while((s = brFromServer.readLine()) != null) {
-                            receiver.received(s);
+                            try {
+                                String strs[] = nameTextOfStr(s);
+                                String name = strs[0];
+                                String text = strs[1];
+                                receiver.received(name, text);
+                            } catch (InvalidMessageException e) {
+                                System.err.println(e.getMessage());
+                                System.err.println(e);
+                            }
                         }
                     }
                     catch(Exception e) {
@@ -41,10 +49,21 @@ class Client {
 
     public void start() {
         this.thFromServer.start();
-        while (true);
     }
 
     public void send(String text, String username) {
-        this.pwToServer.println(String.format("%s;%s", username, text));
+        this.pwToServer.println(nameTextToStr(username, text));
+    }
+
+    private String nameTextToStr(String name, String text) {
+        return String.format("%s;%s", name, text);
+    }
+
+    private String[] nameTextOfStr(String original) throws InvalidMessageException {
+        String strs[] = original.split(";", 2);
+        if (strs.length != 2) {
+            throw new InvalidMessageException("cannot find username");
+        }
+        return strs;
     }
 }
