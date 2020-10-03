@@ -68,7 +68,7 @@ public class MessageFrame extends JFrame implements ActionListener, MessageRecei
         if (messageCount > MINIMAM_MESSAGE_NUMBER) {
             gridLayout.setRows(messageCount);
         }
-        messageBox.add(new MessagePanel(text, username));
+        messageBox.add(MessagePanel.get(username, text));
 
         // 新しいメッセージの再表示
         messageBox.revalidate();
